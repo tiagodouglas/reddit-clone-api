@@ -1,35 +1,34 @@
 const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Post = mongoose.model('Post');
+const User = mongoose.model('User');
 
-module.exports = {
-    create,
-    get,
-    getById,
-    update,
-    remove
-}
-
-async function create(req, res) {
+const create = (req, res) => {
     const post = new Post(req.body);
-    post.save((err, post) => {
-        return res.status(200).json({
-            content: post, message:'Post created successfully'
-        });
+    post.author = req.userId;
+    
+    post.save().then((post) => {
+        return User.findById(req.userId);
+    }).then((user) => {
+        user.posts.unshift(post);
+        user.save();
+        return res.status(201).json({content: post});
+    }).catch((err) => {
+        console.log(err.message);
     });
 }
 
-async function get(req, res) {
+const get = (req, res) => {
     Post.find({}).then((posts) => {
         return res.status(200).json({
             content: posts
         });
     }).catch((err) => {
         console.log(err.message);
-    })
+    });
 }
 
-async function getById(req, res) {
+const getById = (req, res) => {
     Post.findById(req.params.id).populate('comments').then((post) => {
         return res.status(200).json({
             content: post
@@ -39,10 +38,18 @@ async function getById(req, res) {
     })
 }
 
-async function update(req, res) {
+const update = (req, res) => {
     
 }
 
-async function remove(req, res) {
+const remove = (req, res) => {
     
+}
+
+module.exports = {
+    create,
+    get,
+    getById,
+    update,
+    remove
 }

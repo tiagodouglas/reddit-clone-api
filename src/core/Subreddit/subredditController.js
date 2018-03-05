@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Post = mongoose.model('Post');
 
-module.exports = {
-    find
-}
-
-async function find(req, res) {
+const find = (req, res) => {
     let post = new Post(req.body);
     Post.find({ subreddit: req.params.subreddit })
         .then((posts) => {
@@ -16,4 +12,8 @@ async function find(req, res) {
     }).catch((err) => {
         console.log(err)
     })
+}
+
+module.exports = {
+    find
 }

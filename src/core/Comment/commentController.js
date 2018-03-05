@@ -2,15 +2,9 @@ const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Comment = mongoose.model('Post');
 
-module.exports = {
-    create,
-    get,
-    getById,
-    update,
-    remove
-}
 
-async function create(req, res) {
+
+const create = (req, res) => {
     const comment = new Comment(req.body);
     comment.save().then((comment) => {
         return Post.findById(req.params.postId)
@@ -24,18 +18,26 @@ async function create(req, res) {
     });
 }
 
-async function get(req, res) {
+const get = (req, res) => {
 
 }
 
-async function getById(req, res) {
+const getById = (req, res) => {
 
 }
 
-async function update(req, res) {
+const update = (req, res) => {
     
 }
 
-async function remove(req, res) {
+const remove = (req, res) => {
     
+}
+
+module.exports = {
+    create,
+    get,
+    getById,
+    update,
+    remove
 }

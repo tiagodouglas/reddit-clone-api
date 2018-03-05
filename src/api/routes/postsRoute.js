@@ -1,7 +1,9 @@
+const verifyToken = require('../middleware/auth');
+
 module.exports = (app) => {
     const posts = require('../../core/Post/postsController');
 
-    app.post('/posts', (req, res) => {
+    app.post('/posts', verifyToken, (req, res) => {
         posts.create(req, res);
     });
 

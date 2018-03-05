@@ -2,18 +2,15 @@ const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = mongoose.model('User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-module.exports = {
-    signUp,
-    login
-}
-
-async function signUp(req, res) {
+const signUp = (req, res) => {
     const user = new User(req.body);
 
+    hashedPassword = bcrypt.hashSync(user.password, 10);
+    user.password = hashedPassword;
     user.save().then((user) => {
         let token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-        res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
         res.status(200).json({
             message: 'User created successfully',
             token: token
@@ -23,32 +20,37 @@ async function signUp(req, res) {
     });
 }
 
-async function login(req, res) {
+const login = (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
-    // Find this user name
+
     User.findOne({ username }, 'username password').then((user) => {
-        console.log(user);
-    if (!user) {
-        return res.status(401).send({ message: 'Wrong Username or Password' });
-    }
-    user.comparePassword(password, (err, isMatch) => {
-        if (!isMatch) {
-            // Password does not match
-            return res.status(401).send({ message: "Wrong Username or password"});
+        if (!user) {
+            return res.status(401).send({ message: 'Wrong Username or Password' });
         }
+
+         let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+         if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+
+        
         const token = jwt.sign(
             { _id: user._id, username: user.username }, process.env.SECRET,
             { expiresIn: "60 days" }
         );
-
-        res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-        res.status(200).json({
+        user.password = undefined;
+        return res.status(200).json({
             message: 'OK',
-            token: token
-            });
+            token: token,
+            user: user
         });
+
     }).catch((err) => {
         console.log(err);
     });
+}
+
+
+module.exports = {
+    signUp,
+    login
 }

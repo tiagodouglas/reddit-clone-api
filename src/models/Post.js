@@ -8,7 +8,8 @@ module.exports = () => {
         url:        { type: String, required: true },
         summary:    { type: String, required: true },
         subreddit:  { type: String, required: true },
-        comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
+        comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+        author : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
     });
 
     schema.pre('save', (next) => {

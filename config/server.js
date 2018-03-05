@@ -4,12 +4,13 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const db = require('./db');
+const auth = require('../src/api/middleware/auth');
 require('dotenv').config();
 
 db('mongodb://localhost/db-reddit');
 
 const app = express();
-
+// app.use(auth);
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
