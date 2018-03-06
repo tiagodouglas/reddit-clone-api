@@ -10,7 +10,7 @@ const find = (req, res) => {
                 content: posts
             });
     }).catch((err) => {
-        console.log(err)
+        return res.status(500).json({Error: 'Interval error'});
     })
 }
 

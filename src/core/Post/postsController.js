@@ -14,7 +14,7 @@ const create = (req, res) => {
         user.save();
         return res.status(201).json({content: post});
     }).catch((err) => {
-        console.log(err.message);
+        return res.status(500).json({Error: 'Interval error'});
     });
 }
 
@@ -24,7 +24,7 @@ const get = (req, res) => {
             content: posts
         });
     }).catch((err) => {
-        console.log(err.message);
+        return res.status(500).json({Error: 'Interval error'});
     });
 }
 
@@ -34,7 +34,7 @@ const getById = (req, res) => {
             content: post
         });
     }).catch((err) => {
-        console.log(err.message)
+        return res.status(500).json({Error: 'Interval error'});
     })
 }
 

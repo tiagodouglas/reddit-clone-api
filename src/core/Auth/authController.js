@@ -4,7 +4,7 @@ const User = mongoose.model('User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const signUp = (req, res) => {
+const register = (req, res) => {
     const user = new User(req.body);
 
     hashedPassword = bcrypt.hashSync(user.password, 10);
@@ -16,7 +16,7 @@ const signUp = (req, res) => {
             token: token
         });
     }).catch((err) => {
-        console.log(err.message);
+        return res.status(500).json({Error: 'Interval error'});
     });
 }
 
@@ -29,8 +29,8 @@ const login = (req, res) => {
             return res.status(401).send({ message: 'Wrong Username or Password' });
         }
 
-         let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-         if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
+        let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+        if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
 
         
         const token = jwt.sign(
@@ -45,12 +45,12 @@ const login = (req, res) => {
         });
 
     }).catch((err) => {
-        console.log(err);
+        return res.status(500).json({Error: 'Interval error'});
     });
 }
 
 
 module.exports = {
-    signUp,
+    register,
     login
 }

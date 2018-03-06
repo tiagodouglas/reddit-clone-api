@@ -1,21 +1,16 @@
 const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
-const Comment = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
+const Post = mongoose.model('Post');
 
 
 
 const create = (req, res) => {
-    const comment = new Comment(req.body);
-    comment.save().then((comment) => {
-        return Post.findById(req.params.postId)
-    }).then((post) => {
-        post.comments.unshift(comment)
-        return post.save()
-    }).then((post) => {
-        res.status(200).json({content: post, message: 'Comment created successfullyOK'})
-    }).catch((err) => {
-        console.log(err)
-    });
+    Post.findById(req.params.postId).exec(function (err, post) {
+        post.comments.unshift(req.body);
+        post.save();
+        return res.status(200).json({content: post});
+    })
 }
 
 const get = (req, res) => {

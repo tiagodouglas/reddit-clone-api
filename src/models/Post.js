@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Comment = mongoose.model('Comment');
 
 module.exports = () => {
     const schema = mongoose.Schema({
@@ -8,7 +9,7 @@ module.exports = () => {
         url:        { type: String, required: true },
         summary:    { type: String, required: true },
         subreddit:  { type: String, required: true },
-        comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+        comments: [Comment.schema],
         author : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
     });
 
